@@ -1,0 +1,6 @@
+foo
+*build*/
+*.swp
+*.qmlc
+*.bak/
+doc/html/
