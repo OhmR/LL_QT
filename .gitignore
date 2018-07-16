@@ -4,3 +4,4 @@ foo
 *.qmlc
 *.bak/
 doc/html/
+*pro.user*
