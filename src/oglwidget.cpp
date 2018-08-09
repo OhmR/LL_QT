@@ -12,7 +12,6 @@ OGLWidget::OGLWidget(QWidget* parent, const char* name, bool fs)//:QGLWidget(par
     rQuad = 0.0;
     fullScreen = fs;
     setGeometry(0, 0, 640, 480);
-
     if(fullScreen)
         showFullScreen();
 }
