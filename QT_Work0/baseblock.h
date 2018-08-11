@@ -1,17 +1,18 @@
 #ifndef BASEBLOCK_H
 #define BASEBLOCK_H
+#include "./virtualblock.h"
 
-#include <virtualblock.h>
 
 class BaseBlock : public VirtualBlock{
 public:
     BaseBlock();
-    int ReturnX();
-    int ReturnY();
-    int ReturnSize();
-    int ReturnShape();
-    int ReturnIn();
-    int ReturnOut();
+    int ReturnX() override;
+    int ReturnY() override;
+    int ReturnSize() override;
+    int ReturnShape() override;
+    int ReturnIn() override;
+    int ReturnOut() override;
+    ~BaseBlock(){}
 
 private:
     int x;

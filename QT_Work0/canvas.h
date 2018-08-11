@@ -3,6 +3,7 @@
 
 #include <QOpenGLWidget>
 #include <baseblock.h>
+#include <QList>
 
 class canvas : public QOpenGLWidget
 {
@@ -15,6 +16,7 @@ private:
     int length;
     int width;
     BaseBlock *curblock;                //指向当前块
+
     BaseBlock *block[100];              //存储已经创立的块
     void addBlock(BaseBlock *a);
     void deleteBlock();
