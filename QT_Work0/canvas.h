@@ -14,7 +14,7 @@ private:
     int space;                              //网格点间距像素点
     int blocknum;                           //功能块个数
     int length;
-    int width;
+    int wid;
     BaseBlock *curblock;                //指向当前块
 
     BaseBlock *block[100];              //存储已经创立的块

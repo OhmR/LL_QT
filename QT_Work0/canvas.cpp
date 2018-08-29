@@ -8,10 +8,10 @@
 canvas::canvas(int x, int y)
 {
     length = y;
-    width = x;
+    wid = x;
     space = 10;
     blocknum = 0;
-    this->resize(length, width);
+    this->resize(length, wid);
 
     QPalette pal(this->palette());      //设置背景色为白色
     pal.setColor(QPalette::Background, Qt::white);
@@ -52,7 +52,7 @@ void canvas::paintEvent(QPaintEvent *event){
 
 //    for(int x = 0; x < this->size().rheight(); x += space){     //绘制背景点
 //        for(int y = 0; y < this->size().rwidth(); y += space){
-    for(int x = 0; x < this->width; x += space){     //绘制背景点
+    for(int x = 0; x < this->width(); x += space){     //绘制背景点
         for(int y = 0; y < this->height(); y += space){
             //We need  VISIBLE points, not one pixel! So, please use draw drawEllipse instead of drawPoint~
             p.drawEllipse(QPoint(x,y),1,1);

@@ -10,7 +10,7 @@ public:
     virtual int ReturnSize()= 0;
     virtual int ReturnShape()= 0;
     virtual int ReturnIn() = 0 ;
-    virtual int ReturnOut()  =0 ;
+    virtual int ReturnOut()  = 0 ;
 
 
 //Pure Abstract base class does not need private members.
@@ -18,7 +18,7 @@ public:
 //So i just comment them.
 
 
-//piivate:
+//private:
 //    int x;
 //    int y;
 //    int size;
