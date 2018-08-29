@@ -11,12 +11,22 @@
 class BlockParser
 {
 public:
-    BlockParser();
+    /*!
+     * \brief Constructor of BlockParser
+     * \param Path The  *NIX-like full-path to Module Metadata json file.
+     */
+    explicit BlockParser(QString Path);
+    /*!
+     * \brief getBlockName
+     * \return The verbose and descriptive name of this block
+     */
+    QString getBlockName();
     void parser();
     void build();
 
 private:
     QFile *fp;
+    QJsonDocument *JsonObj;
     QJsonValue name_value;
     QString name;
 };

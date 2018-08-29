@@ -7,8 +7,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    BlockParser p;
-    p.parser();
+    BlockParser p("/home/cn/test.json");
+    qDebug()<<p.getBlockName();
     canvas c(500, 700);
     c.show();
 
