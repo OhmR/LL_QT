@@ -1,42 +1,47 @@
 #ifndef BASEBLOCK_H
 #define BASEBLOCK_H
 
-#include "./virtualblock.h"
-#include <QStringList>
 #include <QDebug>
+#include <QStringList>
+#include "./iblock.h"
 
-class BaseBlock : public VirtualBlock{
-public:
-    BaseBlock(QStringList InputId,
-              QStringList InputDes,
-              QStringList OutputId,
-              QStringList OutputDes,
-              QString BlockName);
-    int ReturnX() override;
-    int ReturnY() override;
-    int ReturnSize() override;
-    int ReturnShape() override;
-    int ReturnIn() override;
-    int ReturnOut() override;
-    QString ReturnBlockName();
-    QString InId(int index);
-    QString OutId(int index);
-    QString InDes(int index);
-    QString OutDes(int index);
-    ~BaseBlock(){}
+/*!
+ * \brief The BaseBlock class
+ * Baseblock is block which common appearance. Typically , a Baseblock is an
+ * rectangle with some extra pins.
+ *
+ * A Baseblock has two kinds of pins. One is "input Pin" which  will be
+ * disposed on the left side of the rectangle. Another is  "output Pin" which
+ * will be  disposed on the right side of the rectangle.
+ *
+ * This class holds the data which are needed when drawing this block to
+ * Canvas. Such as block's position , geometric info  and etc.
+ *
+ * This class also implements some function for user to  "interact" with the the
+ * Block.
+ *
+ * In some way, This class represents both "Controller" layer and "model" layer
+ * in MVC design pattern.
+ */
+class BaseBlock : public IBlock {
+ public:
+  BaseBlock(QStringList InputId, QStringList InputDes, QStringList OutputId,
+            QStringList OutputDes, QString BlockName);
+  QString ReturnBlockName();
+  QString InId(int index);
+  QString OutId(int index);
+  QString InDes(int index);
+  QString OutDes(int index);
+  void paintSelf(QPainter* painter) override;
 
-private:
-    int x;
-    int y;
-    int size;
-    int shape;  //列不同数值存储不同形状
-    int input;  //输入接口数
-    int output; //输出接口数
-    QStringList InputId;
-    QStringList InputDes;
-    QStringList OutputId;
-    QStringList OutputDes;
-    QString BlockName;
+ private:
+  int input;   //输入接口数
+  int output;  //输出接口数
+  QStringList InputId;
+  QStringList InputDes;
+  QStringList OutputId;
+  QStringList OutputDes;
+  QString BlockName;
 };
 
-#endif // BASEBLOCK_H
+#endif  // BASEBLOCK_H

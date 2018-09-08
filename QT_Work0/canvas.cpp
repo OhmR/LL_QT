@@ -20,18 +20,9 @@ canvas::canvas(int x, int y)
 }
 
 void canvas::addBlock(BaseBlock *a){
-    block[blocknum] = a;
-    blocknum++;
 }
 
 void canvas::deleteBlock(){     //当前这么写，并未真正删除。
-    if(curblock != NULL){
-//        int temp = this->findBlock(curblock);
-//        for(int i = temp; i < blocknum; i++){
-//            block[i] = block[i + 1];
-//        }
-        blocknum--;
-    }
 }
 
 //if you don't need to use callback parameters, explictly declare that.

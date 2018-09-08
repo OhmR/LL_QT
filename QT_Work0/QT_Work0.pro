@@ -1,12 +1,10 @@
-QT += widgets
-QT += gui
-QT += core
+QT += widgets gui core
 
 HEADERS += \
     canvas.h \
     baseblock.h \
-    virtualblock.h \
-    blockparser.h
+    blockparser.h \
+    iblock.h
 
 SOURCES += \
     canvas.cpp \
