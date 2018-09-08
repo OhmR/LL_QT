@@ -26,32 +26,82 @@ BlockParser::getBlockName(){
     else
         //Do something here to handle the error
         throw -1;
-
 }
 
-
-
-
-
-void BlockParser::parser()
+void
+BlockParser::getBlockInput()
 {
-    QJsonParseError json_error;
-    QJsonDocument parse_document = QJsonDocument::fromJson(fp->readAll(), &json_error);
-    if(json_error.error == QJsonParseError::NoError){
-        if(parse_document.isObject()){      //need to be complete
-            qDebug()<<"isObject";
-            QJsonObject obj = parse_document.object();
-            if(obj.contains("name")){   //get name of object
-                name_value = obj.take("name");
-                if(name_value.isString()){
-                    name = name_value.toString();
-                }
+    //if you want access something , get the jsonObj First.
+    const QJsonObject &tObj  =  this->JsonObj->object();
+    QJsonObject::const_iterator tIter=tObj.constFind(QString("Input"));
+    if(tIter!=tObj.end() && (*tIter).isArray()){
+        QJsonArray array = (*tIter).toArray();
+        for(int i = 0 ; i < array.size(); i++){
+            QJsonObject Objtemp = array.at(i).toObject();
+            QJsonObject::const_iterator Itertemp = Objtemp.constFind("description");
+            if(Itertemp != Objtemp.end() && (*Itertemp).isString()){
+                InputDes.insert(i, (*Itertemp).toString());
+            }
+
+            Itertemp = Objtemp.constFind("id");
+            if(Itertemp != Objtemp.end() && (*Itertemp).isString()){
+                InputId.insert(i, (*Itertemp).toString());
             }
         }
-        else if(parse_document.isArray()){
-            qDebug()<<"isArray";
+    }
+    else
+        //Do something here to handle the error
+        throw -1;
+
+    qDebug()<<InputId;
+    qDebug()<<InputDes;
+}
+
+void
+BlockParser::getBlockOutput()
+{
+    //if you want access something , get the jsonObj First.
+    const QJsonObject &tObj  =  this->JsonObj->object();
+    QJsonObject::const_iterator tIter=tObj.constFind(QString("Output"));
+    if(tIter!=tObj.end() && (*tIter).isArray()){
+        QJsonArray array = (*tIter).toArray();
+        for(int i = 0 ; i < array.size(); i++){
+            QJsonObject Objtemp = array.at(i).toObject();
+            QJsonObject::const_iterator Itertemp = Objtemp.constFind("description");
+            if(Itertemp != Objtemp.end() && (*Itertemp).isString()){
+                OutputDes.insert(i, (*Itertemp).toString());
+            }
+
+            Itertemp = Objtemp.constFind("id");
+            if(Itertemp != Objtemp.end() && (*Itertemp).isString()){
+                OutputId.insert(i, (*Itertemp).toString());
+            }
         }
     }
+    else
+        //Do something here to handle the error
+        throw -1;
 
-    qDebug()<<parse_document.toVariant();
+    qDebug()<<OutputId;
+    qDebug()<<OutputDes;
+}
+
+QStringList
+BlockParser::ReturnInId(){
+    return InputId;
+}
+
+QStringList
+BlockParser::ReturnInDes(){
+    return InputDes;
+}
+
+QStringList
+BlockParser::ReturnOutId(){
+    return OutputId;
+}
+
+QStringList
+BlockParser::ReturnOutDes(){
+    return OutputDes;
 }

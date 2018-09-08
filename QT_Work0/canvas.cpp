@@ -2,8 +2,8 @@
 #include <QPainter>
 #include <QPalette>
 #include <QtGui>
-#include <stdio.h>
 #include <QDebug>
+#include <blockparser.h>
 
 canvas::canvas(int x, int y)
 {
@@ -44,20 +44,27 @@ void canvas::paintEvent(QPaintEvent *event){
     p.setRenderHint(QPainter::Antialiasing);
 
     //dont use printf, use qdebug
-
-//printf("%d\n", this->size().rheight());
-//printf("124");
     qDebug()<<this->size().rheight();
     qDebug()<<"124";
 
-//    for(int x = 0; x < this->size().rheight(); x += space){     //绘制背景点
-//        for(int y = 0; y < this->size().rwidth(); y += space){
     for(int x = 0; x < this->width(); x += space){     //绘制背景点
         for(int y = 0; y < this->height(); y += space){
             //We need  VISIBLE points, not one pixel! So, please use draw drawEllipse instead of drawPoint~
             p.drawEllipse(QPoint(x,y),1,1);
         }
     }
+
+    //draw the block with information in json
+    BlockParser par("/home/ohmr/test.json");
+    qDebug()<<par.getBlockName();
+    par.getBlockInput();
+    par.getBlockOutput();
+
+    BaseBlock block(par.ReturnInId(),
+                    par.ReturnInDes(),
+                    par.ReturnOutId(),
+                    par.ReturnOutDes(),
+                    par.getBlockName());
 
     p.end();
 }

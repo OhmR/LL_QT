@@ -5,8 +5,10 @@
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QJsonValue>
+#include <QJsonArray>
 #include <QFile>
 #include <QDebug>
+#include <QStringList>
 
 class BlockParser
 {
@@ -21,6 +23,12 @@ public:
      * \return The verbose and descriptive name of this block
      */
     QString getBlockName();
+    QStringList ReturnInId();
+    QStringList ReturnInDes();
+    QStringList ReturnOutId();
+    QStringList ReturnOutDes();
+    void getBlockInput();
+    void getBlockOutput();
     void parser();
     void build();
 
@@ -29,6 +37,10 @@ private:
     QJsonDocument *JsonObj;
     QJsonValue name_value;
     QString name;
+    QStringList InputId;
+    QStringList InputDes;
+    QStringList OutputId;
+    QStringList OutputDes;
 };
 
 #endif // BLOCKPARSER_H
