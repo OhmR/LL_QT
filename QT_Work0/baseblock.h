@@ -2,6 +2,7 @@
 #define BASEBLOCK_H
 
 #include <QDebug>
+#include <QList>
 #include <QStringList>
 #include "./iblock.h"
 
@@ -25,6 +26,8 @@
  */
 class BaseBlock : public IBlock {
  public:
+  int input;   //输入接口数
+  int output;  //输出接口数
   BaseBlock(QStringList InputId, QStringList InputDes, QStringList OutputId,
             QStringList OutputDes, QString BlockName);
   QString ReturnBlockName();
@@ -32,11 +35,11 @@ class BaseBlock : public IBlock {
   QString OutId(int index);
   QString InDes(int index);
   QString OutDes(int index);
+  QList<QPoint> InPortPos();   // Input Ports Position
+  QList<QPoint> OutPortPos();  // Output Ports Position
   void paintSelf(QPainter* painter) override;
 
  private:
-  int input;   //输入接口数
-  int output;  //输出接口数
   QStringList InputId;
   QStringList InputDes;
   QStringList OutputId;

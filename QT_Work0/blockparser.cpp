@@ -4,7 +4,8 @@
 
 BlockParser::BlockParser(QString Path) {
   fp = new QFile(Path);
-  if (!fp->open(QIODevice::ReadOnly)) {
+  if (!fp->open(QIODevice::ReadOnly))
+  {
     // Do something here to handle the error
   }
   QJsonParseError tJsonError;

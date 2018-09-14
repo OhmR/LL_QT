@@ -22,6 +22,18 @@ class BlockParser {
    * \return The verbose and descriptive name of this block
    */
   QString getBlockName();
+  /*!
+   * \brief ReturnInId
+   * \param a
+   * \param b
+   * \return
+   *
+   *Hello
+   *===
+   *
+   * this is `content`
+   *
+   */
   QStringList ReturnInId();
   QStringList ReturnInDes();
   QStringList ReturnOutId();

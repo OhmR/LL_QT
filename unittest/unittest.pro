@@ -7,7 +7,9 @@ CONFIG += thread
 CONFIG -= qt
 
 HEADERS += \
-        tst_testmetaiot_ide.h
+        tst_testmetaiot_ide.h\
+    ./QT_Work0/increment.h
+
 
 SOURCES += \
         main.cpp

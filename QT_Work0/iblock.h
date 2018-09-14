@@ -58,7 +58,7 @@ class IBlock {
    */
   virtual void paintSelf(QPainter* paint) = 0;
 
- protected:
+  // protected:
   position mPosition;
 };
 

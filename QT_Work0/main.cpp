@@ -1,14 +1,13 @@
-#include <QApplication>
-#include <QSurfaceFormat>
-#include <canvas.h>
 #include <blockparser.h>
+#include <mainwindow.h>
+#include <QApplication>
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
+int main(int argc, char *argv[]) {
+  QApplication a(argc, argv);
 
-    canvas c(500, 700);
-    c.show();
+  mainwindow main;
+  main.resize(900, 600);
+  main.show();
 
-    return a.exec();
+  return a.exec();
 }

@@ -46,4 +46,28 @@ QString BaseBlock::OutDes(int index) {  // index from 0 to size-1
 
 QString BaseBlock::ReturnBlockName() { return BlockName; }
 
+QList<QPoint> BaseBlock::InPortPos() {
+  QList<QPoint> in;
+  QPoint* p;
+  for (int i = 0; i < this->input; i++) {
+    p = new QPoint(this->mPosition.leftTopPoint.x(),
+                   this->mPosition.leftTopPoint.y() +
+                       (i + 1) * this->mPosition.height / (input + 1));
+    in.append(*p);
+  }
+  return in;
+}
+
+QList<QPoint> BaseBlock::OutPortPos() {
+  QList<QPoint> out;
+  QPoint* p;
+  for (int i = 0; i < this->output; i++) {
+    p = new QPoint(this->mPosition.leftTopPoint.x() + 40,
+                   this->mPosition.leftTopPoint.y() +
+                       (i + 1) * this->mPosition.height / (output + 1));
+    out.append(*p);
+  }
+  return out;
+}
+
 void BaseBlock::paintSelf(QPainter* painter) {}

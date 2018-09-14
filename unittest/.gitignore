@@ -70,4 +70,4 @@ Thumbs.db
 # --------
 *.dll
 *.exe
-
+gtest_dependency.pri
