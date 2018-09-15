@@ -1,4 +1,5 @@
 #include <baseblock.h>
+#include <QtGlobal>
 
 BaseBlock::BaseBlock(QStringList InputId, QStringList InputDes,
                      QStringList OutputId, QStringList OutputDes,
@@ -70,4 +71,52 @@ QList<QPoint> BaseBlock::OutPortPos() {
   return out;
 }
 
-void BaseBlock::paintSelf(QPainter* painter) {}
+void BaseBlock::paintSelf(QPainter* painter) {
+  qDebug() << "Paint Block";
+  switch (mCurStatus) {
+    case floating: {
+      painter->setPen(QPen(Qt::gray, 2, Qt::DotLine, Qt::RoundCap));
+      painter->setBrush(Qt::white);
+      painter->drawRect(mPosition.leftTopPoint.x() - 2 * 10,
+                        mPosition.leftTopPoint.y() - qMax(input, output) * 10,
+                        4 * 10, qMax(input, output) * 2 * 10);
+    }
+    case fixed: {
+      painter->setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap));
+      painter->setBrush(Qt::white);
+      mPosition.width = 4 * 10;
+      mPosition.height = qMax(input, output) * 2 * 10;
+
+      painter->setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap));
+      painter->setBrush(Qt::white);
+      painter->drawRect(mPosition.leftTopPoint.x(), mPosition.leftTopPoint.y(),
+                        mPosition.width, mPosition.height);
+
+      // draw the port in block
+      //      painter->setPen(QPen(Qt::blue, 2));
+      //      QList<QPoint> temp = mBlocks[i].OutPortPos();
+
+      //      for (int j = 0; j < temp.size(); j++) {
+      //        p.drawLine(temp[j], QPoint(temp[j].x() + 3, temp[j].y()));
+      //      }
+
+      //      temp = mBlocks[i].InPortPos();
+      //      for (int j = 0; j < temp.size(); j++) {
+      //        p.drawLine(temp[j], QPoint(temp[j].x() - 3, temp[j].y()));
+      //      }
+    }
+
+    case loaded:
+    default:
+      break;
+  }
+}
+void BaseBlock::setPosition(position* a) {
+  mPosition = *a;
+  emit statusChange();
+}
+
+void BaseBlock::setStatus(BlockStatus a) {
+  mCurStatus = a;
+  emit statusChange();
+}

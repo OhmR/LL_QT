@@ -4,7 +4,7 @@
 #include <QDebug>
 #include <QList>
 #include <QStringList>
-#include "./iblock.h"
+#include "iblock.h"
 
 /*!
  * \brief The BaseBlock class
@@ -24,7 +24,10 @@
  * In some way, This class represents both "Controller" layer and "model" layer
  * in MVC design pattern.
  */
-class BaseBlock : public IBlock {
+class BaseBlock : public QObject, public IBlock {
+  Q_OBJECT
+  Q_INTERFACES(IBlock)
+
  public:
   int input;   //输入接口数
   int output;  //输出接口数
@@ -38,6 +41,10 @@ class BaseBlock : public IBlock {
   QList<QPoint> InPortPos();   // Input Ports Position
   QList<QPoint> OutPortPos();  // Output Ports Position
   void paintSelf(QPainter* painter) override;
+  void setPosition(position* a) override;
+  void setStatus(BlockStatus a) override;
+ signals:
+  void statusChange();
 
  private:
   QStringList InputId;
