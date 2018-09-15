@@ -1,51 +1,10 @@
 #include <baseblock.h>
 #include <QtGlobal>
 
-BaseBlock::BaseBlock(QStringList InputId, QStringList InputDes,
-                     QStringList OutputId, QStringList OutputDes,
-                     QString BlockName) {
-  this->InputId = InputId;
-  this->OutputId = OutputId;
-  this->InputDes = InputDes;
-  this->OutputDes = OutputDes;
-  this->BlockName = BlockName;
-  this->input = InputId.size();
-  this->output = OutputId.size();
+BaseBlock::BaseBlock(BlockParser& bp) : mBlockMetaInfo(bp) {
+  this->input = bp.ReturnInId().size();
+  this->output = bp.ReturnOutId().size();
 }
-
-QString BaseBlock::InId(int index) {  // index from 0 to size-1
-  if (index >= InputId.size()) {
-    qDebug() << "baseblock.cpp : InId error!";
-    throw - 1;
-  }
-  return this->InputId.at(index);
-}
-
-QString BaseBlock::InDes(int index) {  // index from 0 to size-1
-  if (index >= InputDes.size()) {
-    qDebug() << "baseblock.cpp : InDes error!";
-    throw - 1;
-  }
-  return this->InputDes.at(index);
-}
-
-QString BaseBlock::OutId(int index) {  // index from 0 to size-1
-  if (index >= OutputId.size()) {
-    qDebug() << "baseblock.cpp : OutId error!";
-    throw - 1;
-  }
-  return this->OutputId.at(index);
-}
-
-QString BaseBlock::OutDes(int index) {  // index from 0 to size-1
-  if (index >= OutputDes.size()) {
-    qDebug() << "baseblock.cpp : OutDes error!";
-    throw - 1;
-  }
-  return this->OutputDes.at(index);
-}
-
-QString BaseBlock::ReturnBlockName() { return BlockName; }
 
 QList<QPoint> BaseBlock::InPortPos() {
   QList<QPoint> in;
@@ -80,7 +39,7 @@ void BaseBlock::paintSelf(QPainter* painter) {
       painter->drawRect(mPosition.leftTopPoint.x() - 2 * 10,
                         mPosition.leftTopPoint.y() - qMax(input, output) * 10,
                         4 * 10, qMax(input, output) * 2 * 10);
-    }
+    } break;
     case fixed: {
       painter->setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap));
       painter->setBrush(Qt::white);
@@ -89,25 +48,12 @@ void BaseBlock::paintSelf(QPainter* painter) {
 
       painter->setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap));
       painter->setBrush(Qt::white);
-      painter->drawRect(mPosition.leftTopPoint.x(), mPosition.leftTopPoint.y(),
-                        mPosition.width, mPosition.height);
-
-      // draw the port in block
-      //      painter->setPen(QPen(Qt::blue, 2));
-      //      QList<QPoint> temp = mBlocks[i].OutPortPos();
-
-      //      for (int j = 0; j < temp.size(); j++) {
-      //        p.drawLine(temp[j], QPoint(temp[j].x() + 3, temp[j].y()));
-      //      }
-
-      //      temp = mBlocks[i].InPortPos();
-      //      for (int j = 0; j < temp.size(); j++) {
-      //        p.drawLine(temp[j], QPoint(temp[j].x() - 3, temp[j].y()));
-      //      }
-    }
+      // use overriding function will increase readablility
+      painter->drawRect(QRectF(mPosition.leftTopPoint,
+                               QSize(mPosition.width, mPosition.height)));
+    } break;
 
     case loaded:
-    default:
       break;
   }
 }

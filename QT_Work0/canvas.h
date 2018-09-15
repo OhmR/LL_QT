@@ -49,7 +49,6 @@ class canvas : public QOpenGLWidget {
   // We need Polymophsim here, So use IBlock* not BaseBlock*
   void addBlock(IBlock *a);
   void deleteBlock();
-  int max(int a, int b);
 
   void paintEvent(QPaintEvent *event);  // override;
   void mousePressEvent(QMouseEvent *e);

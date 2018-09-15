@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QList>
 #include <QStringList>
+#include "blockparser.h"
 #include "iblock.h"
 
 /*!
@@ -29,17 +30,7 @@ class BaseBlock : public QObject, public IBlock {
   Q_INTERFACES(IBlock)
 
  public:
-  int input;   //输入接口数
-  int output;  //输出接口数
-  BaseBlock(QStringList InputId, QStringList InputDes, QStringList OutputId,
-            QStringList OutputDes, QString BlockName);
-  QString ReturnBlockName();
-  QString InId(int index);
-  QString OutId(int index);
-  QString InDes(int index);
-  QString OutDes(int index);
-  QList<QPoint> InPortPos();   // Input Ports Position
-  QList<QPoint> OutPortPos();  // Output Ports Position
+  BaseBlock(BlockParser& bp);
   void paintSelf(QPainter* painter) override;
   void setPosition(position* a) override;
   void setStatus(BlockStatus a) override;
@@ -47,11 +38,11 @@ class BaseBlock : public QObject, public IBlock {
   void statusChange();
 
  private:
-  QStringList InputId;
-  QStringList InputDes;
-  QStringList OutputId;
-  QStringList OutputDes;
-  QString BlockName;
+  int input;                   //输入接口数
+  int output;                  //输出接口数
+  QList<QPoint> InPortPos();   // Input Ports Position
+  QList<QPoint> OutPortPos();  // Output Ports Position
+  BlockParser& mBlockMetaInfo;
 };
 
 #endif  // BASEBLOCK_H
