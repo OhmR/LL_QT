@@ -30,16 +30,28 @@ class BaseBlock : public QObject, public IBlock {
   Q_INTERFACES(IBlock)
 
  public:
-  BaseBlock(BlockParser& bp);
+  BaseBlock(BlockParser& bp, int size);
   void paintSelf(QPainter* painter) override;
+  void paintSelectFrame(QPainter* painter) override;
   void setPosition(position* a) override;
   void setStatus(BlockStatus a) override;
+  int returnStatus() override;
+  bool at_range(QPoint start, QPoint end) override;
+  bool contain_point(QPoint point) override;
+  int returnwidth() override;
+  int returnheight() override;
+  QPoint BlockLeftTop();
+  QPoint BlockLeftBottom();
+  QPoint BlockRightTop();
+  QPoint BlockRightBottom();
+
  signals:
   void statusChange();
 
  private:
-  int input;                   //输入接口数
-  int output;                  //输出接口数
+  int input;   //输入接口数
+  int output;  //输出接口数
+  int space;
   QList<QPoint> InPortPos();   // Input Ports Position
   QList<QPoint> OutPortPos();  // Output Ports Position
   BlockParser& mBlockMetaInfo;

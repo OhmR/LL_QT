@@ -20,14 +20,16 @@ class canvas : public QOpenGLWidget {
    */
   enum canvasStatus {
     idle = 1,
-    predraw_newblock,
-    draw_newblock,
     pre_select,
     multiple_select,
     after_select,
     single_focus,
     multiple_focus
   };
+
+  void setStatus(canvasStatus tempStatus);
+
+  int GetStatus();
 
  public slots:
   void GetBlockI2C_RS485();
@@ -37,9 +39,10 @@ class canvas : public QOpenGLWidget {
   int blocknum;  //功能块个数
   int length;
   int wid;
-  int status;
-  QPoint mousepos;
-  QPoint blockpos;
+  canvasStatus status;
+  //  QPoint mousepos;
+  QPoint passpos;
+  QPoint curpos;
 
   SingleParser *sParser[10];
 
@@ -53,6 +56,7 @@ class canvas : public QOpenGLWidget {
   void paintEvent(QPaintEvent *event);  // override;
   void mousePressEvent(QMouseEvent *e);
   void mouseMoveEvent(QMouseEvent *e);
+  void mouseReleaseEvent(QMouseEvent *e);
 };
 
 #endif  // CANVAS_H

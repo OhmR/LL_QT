@@ -56,9 +56,15 @@ class IBlock {
   /*!
    * draw itself
    */
-  virtual void paintSelf(QPainter* paint) = 0;
+  virtual void paintSelf(QPainter* painters) = 0;
+  virtual void paintSelectFrame(QPainter* painter) = 0;
   virtual void setStatus(BlockStatus a) = 0;
+  virtual int returnStatus() = 0;
   virtual void setPosition(position* a) = 0;
+  virtual bool at_range(QPoint start, QPoint end) = 0;
+  virtual bool contain_point(QPoint point) = 0;
+  virtual int returnwidth() = 0;
+  virtual int returnheight() = 0;
   bool isFloating() { return mCurStatus == floating; }
 
   // The virtual will skipped by moc, only for document.
@@ -67,6 +73,7 @@ class IBlock {
   position mPosition;
   BlockStatus mCurStatus;
 };
+
 Q_DECLARE_INTERFACE(IBlock, "metaiot.ide.block/1.0");
 
 #endif  // VIRTUALBLOCK_H

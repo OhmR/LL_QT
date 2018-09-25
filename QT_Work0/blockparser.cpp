@@ -4,8 +4,7 @@
 
 BlockParser::BlockParser(QString Path) {
   fp = new QFile(Path);
-  if (!fp->open(QIODevice::ReadOnly))
-  {
+  if (!fp->open(QIODevice::ReadOnly)) {
     // Do something here to handle the error
   }
   QJsonParseError tJsonError;
@@ -14,6 +13,9 @@ BlockParser::BlockParser(QString Path) {
   if (tJsonError.error != QJsonParseError::NoError) {
     // Do something here to handle the error
   }
+
+  this->getBlockInput();
+  this->getBlockOutput();
 }
 
 QString BlockParser::getBlockName() {
@@ -57,6 +59,7 @@ void BlockParser::getBlockOutput() {
   // if you want access something , get the jsonObj First.
   const QJsonObject &tObj = this->JsonObj->object();
   QJsonObject::const_iterator tIter = tObj.constFind(QString("Output"));
+
   if (tIter != tObj.end() && (*tIter).isArray()) {
     QJsonArray array = (*tIter).toArray();
     for (int i = 0; i < array.size(); i++) {

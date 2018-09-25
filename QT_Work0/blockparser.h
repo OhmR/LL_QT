@@ -38,10 +38,6 @@ class BlockParser {
   QStringList ReturnInDes();
   QStringList ReturnOutId();
   QStringList ReturnOutDes();
-  void getBlockInput();
-  void getBlockOutput();
-  void parser();
-  void build();
 
  private:
   QFile *fp;
@@ -52,6 +48,8 @@ class BlockParser {
   QStringList InputDes;
   QStringList OutputId;
   QStringList OutputDes;
+  void getBlockInput();
+  void getBlockOutput();
 };
 
 #endif  // BLOCKPARSER_H

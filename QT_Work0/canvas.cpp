@@ -27,11 +27,8 @@ canvas::canvas(int x, int y) {
 void canvas::GetBlockI2C_RS485() {
   sParser[0] = new SingleParser("/home/mocking/test.json");
   BlockParser *par = sParser[0]->request();
-  // This two lines are quite weird... why should i invoke them here?
-  par->getBlockInput();
-  par->getBlockOutput();
-  BaseBlock *block = new BaseBlock(*par);
-  // default selected
+  BaseBlock *block = new BaseBlock(*par, space);
+  //  default selected
   mSelectedBlocks.append(block);
   block->setStatus(IBlock::floating);
   this->addBlock(block);
@@ -42,20 +39,73 @@ void canvas::mouseMoveEvent(QMouseEvent *e) {
   // it must be the status-change which can and only can make the
   // canvas repaint under MVC pattern.
   // may be have any other operations
-  mousepos = e->pos();
+
+  if (this->GetStatus() == pre_select) {
+    this->setStatus(multiple_select);
+    passpos = e->pos();
+  }
+
+  if (this->GetStatus() == multiple_select) {
+    curpos = e->pos();
+    update();
+  }
+
+  //  qDebug() << this->GetStatus();
+
   for (auto &i : mSelectedBlocks)
     if (i->isFloating()) {
       IBlock::position a;
       a.leftTopPoint = e->pos();
+      a.width = i->returnwidth();
+      a.height = i->returnheight();
       i->setPosition(&a);
     }
 }
 
 void canvas::mousePressEvent(QMouseEvent *e) {
   // same problem. Let the status change trigger repainting.
-  if (e->button() & Qt::LeftButton)
+
+  if (e->button() & Qt::LeftButton) {
+    this->setStatus(pre_select);
+  }
+  //  if (e->button() & Qt::LeftButton)
+  //    for (auto &i : mSelectedBlocks) i->setStatus(IBlock::fixed);
+  qDebug() << "in Mousepress";
+}
+
+void canvas::mouseReleaseEvent(QMouseEvent *e) {
+  mSelectedBlocks.clear();
+  if (this->GetStatus() == pre_select) {
+    for (auto &i : mBlocks) {
+      if (i->contain_point(e->pos())) mSelectedBlocks.append(i);
+    }
+    this->setStatus(after_select);
+    update();
+  }
+
+  else if (this->GetStatus() == multiple_select) {
+    for (auto &i : mBlocks) {
+      if (i->at_range(passpos, e->pos())) mSelectedBlocks.append(i);
+    }
+    this->setStatus(after_select);
+    update();
+  }
+
+  if (mSelectedBlocks.size() == 0) this->setStatus(idle);
+
+  if (this->GetStatus() == pre_select || this->GetStatus() == multiple_select)
+    this->setStatus(after_select);
+
+  // change block status
+  if (e->button() & Qt::LeftButton) {
     for (auto &i : mSelectedBlocks) i->setStatus(IBlock::fixed);
-  //    update();
+  }
+
+  qDebug() << "size of mSelectedBlocks";
+  qDebug() << mSelectedBlocks.size();
+
+  qDebug() << "current status of canvas";
+  qDebug() << this->status;
 }
 
 void canvas::addBlock(IBlock *a) {
@@ -66,6 +116,10 @@ void canvas::addBlock(IBlock *a) {
 }
 
 void canvas::deleteBlock() {}
+
+void canvas::setStatus(canvasStatus tempStatus) { status = tempStatus; }
+
+int canvas::GetStatus() { return status; }
 
 void canvas::paintEvent(QPaintEvent *event) {
   /*!
@@ -88,7 +142,19 @@ void canvas::paintEvent(QPaintEvent *event) {
     }
   }
 
+  // Draw the Rec
+  if (this->GetStatus() == multiple_select) {
+    p.setPen(QPen(Qt::gray, 2, Qt::DotLine, Qt::RoundCap));
+    p.setBrush(Qt::NoBrush);
+
+    p.drawRect(QRect(passpos, curpos));
+  }
+
   // Draw the block
   for (auto &i : mBlocks) i->paintSelf(&p);
+
+  // Draw the selected Blocks' frame
+  for (auto &i : mSelectedBlocks) i->paintSelectFrame(&p);
+
   p.end();
 }
