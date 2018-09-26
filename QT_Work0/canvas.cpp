@@ -52,7 +52,7 @@ void canvas::mouseMoveEvent(QMouseEvent *e) {
 
   //  qDebug() << this->GetStatus();
 
-  for (auto &i : mSelectedBlocks)
+  for (auto &i : mBlocks)
     if (i->isFloating()) {
       IBlock::position a;
       a.leftTopPoint = e->pos();
@@ -81,7 +81,7 @@ void canvas::mousePressEvent(QMouseEvent *e) {
 void canvas::mouseReleaseEvent(QMouseEvent *e) {
   qDebug() << "in MouseRelease";
 
-  // may be using seitch to represent FSM is more conventional.
+  // may be using switch to represent FSM is more conventional.
   if (e->button() & Qt::LeftButton) switch (this->GetStatus()) {
       case pre_select: {
         // This three lines may be decimated to a  new private function named
@@ -89,12 +89,15 @@ void canvas::mouseReleaseEvent(QMouseEvent *e) {
         mSelectedBlocks.clear();
         for (auto &i : mBlocks)
           if (i->getStatus() == IBlock::selected) i->setStatus(IBlock::fixed);
+        int tSelectCounter = 0;
         for (auto &i : mBlocks)
           if (i->contain_point(e->pos())) {
             mSelectedBlocks.append(i);
             i->setStatus(IBlock::selected);
+            tSelectCounter++;
           }
-        this->setStatus(after_select);
+        tSelectCounter > 0 ? this->setStatus(after_select)
+                           : this->setStatus(idle);
         update();
       } break;
       case multiple_select: {
@@ -114,8 +117,11 @@ void canvas::mouseReleaseEvent(QMouseEvent *e) {
           qDebug() << "pick";
           auto &i = mSelectedBlocks.first();
           if (i->contain_point(e->pos())) i->setStatus(IBlock::floating);
-          update();
         }
+        mSelectedBlocks.clear();
+        for (auto &i : mBlocks)
+          if (i->getStatus() == IBlock::selected) i->setStatus(IBlock::fixed);
+        update();
         this->setStatus(idle);
       } break;
       case idle: {
@@ -125,14 +131,6 @@ void canvas::mouseReleaseEvent(QMouseEvent *e) {
       default:
         if (mSelectedBlocks.size() == 0) this->setStatus(idle);
     }
-
-  // this two lines are covered by code above.Why should we have them?
-  //  if (this->GetStatus() == pre_select || this->GetStatus() ==
-  //  multiple_select)
-  //    this->setStatus(after_select);
-
-  // change block status
-
   qDebug() << "size of mSelectedBlocks";
   qDebug() << mSelectedBlocks.size();
 
