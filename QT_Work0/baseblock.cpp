@@ -59,21 +59,32 @@ void BaseBlock::paintSelf(QPainter* painter) {
               qMax(input, output) * space,
           mPosition.width, mPosition.height);
     } break;
+    case selected: {
+      painter->setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap));
+      painter->setBrush(Qt::white);
 
+      painter->setPen(QPen(Qt::black, 2, Qt::SolidLine, Qt::RoundCap));
+      painter->setBrush(Qt::white);
+      // use overriding function will increase readablility
+      painter->drawRect(
+          qRound64(mPosition.leftTopPoint.x() / space) * space - 2 * space,
+          qRound64(mPosition.leftTopPoint.y() / space) * space -
+              qMax(input, output) * space,
+          mPosition.width, mPosition.height);
+      paintSelectFrame(painter);
+    } break;
     case loaded:
       break;
   }
 }
 
 void BaseBlock::paintSelectFrame(QPainter* painter) {
-  if (mCurStatus == IBlock::fixed) {
-    painter->setPen(Qt::black);
-    painter->setBrush(Qt::NoBrush);
-    painter->drawEllipse(BlockLeftBottom(), 5, 5);
-    painter->drawEllipse(BlockLeftTop(), 5, 5);
-    painter->drawEllipse(BlockRightBottom(), 5, 5);
-    painter->drawEllipse(BlockRightTop(), 5, 5);
-  }
+  painter->setPen(Qt::black);
+  painter->setBrush(Qt::NoBrush);
+  painter->drawEllipse(BlockLeftBottom(), 5, 5);
+  painter->drawEllipse(BlockLeftTop(), 5, 5);
+  painter->drawEllipse(BlockRightBottom(), 5, 5);
+  painter->drawEllipse(BlockRightTop(), 5, 5);
 }
 
 void BaseBlock::setPosition(position* a) {
@@ -82,7 +93,7 @@ void BaseBlock::setPosition(position* a) {
 }
 
 void BaseBlock::setStatus(BlockStatus a) {
-  qDebug() << "SetBlockStatus";
+  qDebug() << "SetBlockStatus:" << a;
   mCurStatus = a;
   emit statusChange();
 }

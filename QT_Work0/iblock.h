@@ -52,7 +52,7 @@ class IBlock {
    * \dotfile   blockFSMGraph.dot
    *
    */
-  enum BlockStatus { loaded, floating, fixed };
+  enum BlockStatus { loaded = 1, floating, fixed, selected };
   /*!
    * draw itself
    */
@@ -66,6 +66,7 @@ class IBlock {
   virtual int returnwidth() = 0;
   virtual int returnheight() = 0;
   bool isFloating() { return mCurStatus == floating; }
+  BlockStatus getStatus() { return mCurStatus; }
 
   // The virtual will skipped by moc, only for document.
 

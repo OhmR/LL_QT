@@ -64,42 +64,74 @@ void canvas::mouseMoveEvent(QMouseEvent *e) {
 
 void canvas::mousePressEvent(QMouseEvent *e) {
   // same problem. Let the status change trigger repainting.
+  if (e->button() & Qt::LeftButton) switch (this->GetStatus()) {
+      case idle:
+        this->setStatus(pre_select);
+        break;
+      default:
+        qDebug() << "Current Status" << this->GetStatus();
+        qDebug() << "do Nothing for left click";
+    }
 
-  if (e->button() & Qt::LeftButton) {
-    this->setStatus(pre_select);
-  }
   //  if (e->button() & Qt::LeftButton)
   //    for (auto &i : mSelectedBlocks) i->setStatus(IBlock::fixed);
   qDebug() << "in Mousepress";
 }
 
 void canvas::mouseReleaseEvent(QMouseEvent *e) {
-  mSelectedBlocks.clear();
-  if (this->GetStatus() == pre_select) {
-    for (auto &i : mBlocks) {
-      if (i->contain_point(e->pos())) mSelectedBlocks.append(i);
+  qDebug() << "in MouseRelease";
+
+  // may be using seitch to represent FSM is more conventional.
+  if (e->button() & Qt::LeftButton) switch (this->GetStatus()) {
+      case pre_select: {
+        // This three lines may be decimated to a  new private function named
+        // "clearSelected"
+        mSelectedBlocks.clear();
+        for (auto &i : mBlocks)
+          if (i->getStatus() == IBlock::selected) i->setStatus(IBlock::fixed);
+        for (auto &i : mBlocks)
+          if (i->contain_point(e->pos())) {
+            mSelectedBlocks.append(i);
+            i->setStatus(IBlock::selected);
+          }
+        this->setStatus(after_select);
+        update();
+      } break;
+      case multiple_select: {
+        for (auto &i : mBlocks) {
+          if (i->at_range(passpos, e->pos())) {
+            mSelectedBlocks.append(i);
+            // TODO: need more work to support multiple floating
+            i->setStatus(IBlock::floating);
+          }
+        }
+        this->setStatus(after_select);
+        update();
+
+      } break;
+      case after_select: {
+        if (mSelectedBlocks.size() == 1) {
+          qDebug() << "pick";
+          auto &i = mSelectedBlocks.first();
+          if (i->contain_point(e->pos())) i->setStatus(IBlock::floating);
+          update();
+        }
+        this->setStatus(idle);
+      } break;
+      case idle: {
+        for (auto &i : mSelectedBlocks)
+          if (i->isFloating()) i->setStatus(IBlock::fixed);
+      } break;
+      default:
+        if (mSelectedBlocks.size() == 0) this->setStatus(idle);
     }
-    this->setStatus(after_select);
-    update();
-  }
 
-  else if (this->GetStatus() == multiple_select) {
-    for (auto &i : mBlocks) {
-      if (i->at_range(passpos, e->pos())) mSelectedBlocks.append(i);
-    }
-    this->setStatus(after_select);
-    update();
-  }
-
-  if (mSelectedBlocks.size() == 0) this->setStatus(idle);
-
-  if (this->GetStatus() == pre_select || this->GetStatus() == multiple_select)
-    this->setStatus(after_select);
+  // this two lines are covered by code above.Why should we have them?
+  //  if (this->GetStatus() == pre_select || this->GetStatus() ==
+  //  multiple_select)
+  //    this->setStatus(after_select);
 
   // change block status
-  if (e->button() & Qt::LeftButton) {
-    for (auto &i : mSelectedBlocks) i->setStatus(IBlock::fixed);
-  }
 
   qDebug() << "size of mSelectedBlocks";
   qDebug() << mSelectedBlocks.size();
@@ -154,7 +186,8 @@ void canvas::paintEvent(QPaintEvent *event) {
   for (auto &i : mBlocks) i->paintSelf(&p);
 
   // Draw the selected Blocks' frame
-  for (auto &i : mSelectedBlocks) i->paintSelectFrame(&p);
+
+  // for (auto &i : mSelectedBlocks) i->paintSelectFrame(&p);
 
   p.end();
 }
