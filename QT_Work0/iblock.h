@@ -60,19 +60,49 @@ class IBlock {
   virtual void paintSelectFrame(QPainter* painter) = 0;
   virtual void setStatus(BlockStatus a) = 0;
   virtual int returnStatus() = 0;
+  /*!
+   * \brief setPosition
+   * \param a the position
+   * directly set the position
+   */
   virtual void setPosition(position* a) = 0;
   virtual bool at_range(QPoint start, QPoint end) = 0;
   virtual bool contain_point(QPoint point) = 0;
   virtual int returnwidth() = 0;
   virtual int returnheight() = 0;
+  /*!
+   * \brief setPositionWithOffset
+   * \param a the position
+   * set the position by automatically cal
+   */
+  void setPositionWithOffset(QPoint& aCurPos) {
+    position tPosition;
+    tPosition.leftTopPoint = QPoint(aCurPos.x() - mCursorOffset.first,
+                                    aCurPos.y() - mCursorOffset.second);
+    tPosition.height = mPosition.height;
+    tPosition.width = mPosition.width;
+    setPosition(&tPosition);
+  }
   bool isFloating() { return mCurStatus == floating; }
   BlockStatus getStatus() { return mCurStatus; }
+  void pick(QPoint& aCurPos) {
+    mCursorOffset =
+        qMakePair<float, float>(aCurPos.x() - mPosition.leftTopPoint.x(),
+                                aCurPos.y() - mPosition.leftTopPoint.y());
+    setStatus(floating);
+  }
 
   // The virtual will skipped by moc, only for document.
 
  protected:
   position mPosition;
   BlockStatus mCurStatus;
+  /*!
+   * \brief mCursorOffset
+   * \sa setStaus pick
+   * this member will be  changed  while statuc changed from fixed to floating.
+   */
+  QPair<float, float> mCursorOffset;
 };
 
 Q_DECLARE_INTERFACE(IBlock, "metaiot.ide.block/1.0");

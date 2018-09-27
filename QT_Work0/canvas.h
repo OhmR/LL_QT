@@ -57,6 +57,7 @@ class canvas : public QOpenGLWidget {
   void mousePressEvent(QMouseEvent *e);
   void mouseMoveEvent(QMouseEvent *e);
   void mouseReleaseEvent(QMouseEvent *e);
+  void clearSelected();
 };
 
 #endif  // CANVAS_H

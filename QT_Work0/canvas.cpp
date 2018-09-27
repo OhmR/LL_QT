@@ -54,18 +54,29 @@ void canvas::mouseMoveEvent(QMouseEvent *e) {
 
   for (auto &i : mBlocks)
     if (i->isFloating()) {
-      IBlock::position a;
-      a.leftTopPoint = e->pos();
-      a.width = i->returnwidth();
-      a.height = i->returnheight();
-      i->setPosition(&a);
+      auto pos = e->pos();
+      i->setPositionWithOffset(pos);
     }
 }
 
+void canvas::clearSelected() {
+  mSelectedBlocks.clear();
+  for (auto &i : mBlocks)
+    if (i->getStatus() == IBlock::selected) i->setStatus(IBlock::fixed);
+}
 void canvas::mousePressEvent(QMouseEvent *e) {
   // same problem. Let the status change trigger repainting.
   if (e->button() & Qt::LeftButton) switch (this->GetStatus()) {
       case idle:
+        for (auto &i : mBlocks)
+          if (i->isFloating()) i->setStatus(IBlock::fixed);
+        clearSelected();
+        this->setStatus(pre_select);
+        break;
+      case after_select:
+        for (auto &i : mBlocks)
+          if (i->isFloating()) i->setStatus(IBlock::fixed);
+        clearSelected();
         this->setStatus(pre_select);
         break;
       default:
@@ -86,9 +97,6 @@ void canvas::mouseReleaseEvent(QMouseEvent *e) {
       case pre_select: {
         // This three lines may be decimated to a  new private function named
         // "clearSelected"
-        mSelectedBlocks.clear();
-        for (auto &i : mBlocks)
-          if (i->getStatus() == IBlock::selected) i->setStatus(IBlock::fixed);
         int tSelectCounter = 0;
         for (auto &i : mBlocks)
           if (i->contain_point(e->pos())) {
@@ -105,12 +113,12 @@ void canvas::mouseReleaseEvent(QMouseEvent *e) {
           if (i->at_range(passpos, e->pos())) {
             mSelectedBlocks.append(i);
             // TODO: need more work to support multiple floating
-            i->setStatus(IBlock::floating);
+            auto pos = e->pos();
+            i->pick(pos);
           }
         }
         this->setStatus(after_select);
         update();
-
       } break;
       case after_select: {
         if (mSelectedBlocks.size() == 1) {
@@ -125,7 +133,7 @@ void canvas::mouseReleaseEvent(QMouseEvent *e) {
         this->setStatus(idle);
       } break;
       case idle: {
-        for (auto &i : mSelectedBlocks)
+        for (auto &i : mBlocks)
           if (i->isFloating()) i->setStatus(IBlock::fixed);
       } break;
       default:
